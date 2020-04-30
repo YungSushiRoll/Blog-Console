@@ -84,6 +84,50 @@ namespace Blogs_Console
                         }
                         db.SaveChanges();
                     }
+                    else if (option == "4")
+                    {
+                        var db = new BloggingContext();
+                        List<Blog> blogs = db.Blogs.OrderBy(b => b.Name).ToList();
+
+                        String resp;
+
+                        Console.WriteLine("View Posts from which Blog\n--------------------------\n" +
+                            "0: Display all Posts");
+                        foreach (var item in blogs)
+                        {
+                            Console.WriteLine(item.BlogId + ": " + item.Name);
+                        }
+                        resp = Console.ReadLine();
+                        
+                        if(int.Parse(resp) == 0)
+                        {
+                            List<Post> posts = db.Posts.OrderBy(p => p.Title).ToList();
+
+                            foreach(var post in posts)
+                            {
+                                Console.WriteLine("--------------------------------------\nPost Id: " +
+                                    post.PostId + "\n" +
+                                    post.Title + "\n" +
+                                    post.Content +
+                                    "\n--------------------------------------\n");
+                            }
+                        }
+                        else
+                        {
+                            int id = int.Parse(resp);
+                            List<Post> posts = db.Posts.Where(p => p.BlogId == id).OrderBy(p => p.Title).ToList();
+                            
+                            logger.Info(posts.Count() + " post(s) found.");
+                            foreach(var post in posts)
+                            {
+                                Console.WriteLine("--------------------------------------\nPost Id: " +
+                                    post.PostId + "\n" +
+                                    post.Title + "\n" +
+                                    post.Content +
+                                    "\n--------------------------------------\n");
+                            }
+                        }
+                    }
                 } while (option.ToLower() != "");
             }
             catch (Exception ex)
